@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="cadastro.css">
+    <script>
+        function cadastrar(event) {
+            event.preventDefault();
+
+            var login = document.getElementById('login').value;
+            var senha = document.getElementById('senha').value;
+            var confirmarSenha = document.getElementById('confirmar-senha').value;
+
+            if (!isValidEmail(login)) {
+                alert('O login deve ser um email válido.');
+                return;
+            }
+
+            if (senha.length < 8) {
+                alert('A senha deve ter 8 caracteres.');
+                return;
+            }
+
+            if (login && senha && confirmarSenha) {
+                if (senha === confirmarSenha) {
+                    var dadosCadastro = {
+                        login: login,
+                        senha: senha
+                    };
+
+                    var cadastros = JSON.parse(localStorage.getItem('cadastros')) || [];
+                    cadastros.push(dadosCadastro);
+                    localStorage.setItem('cadastros', JSON.stringify(cadastros));
+
+                    console.log(dadosCadastro);
+
+                    document.getElementById('login').value = '';
+                    document.getElementById('senha').value = '';
+                    document.getElementById('confirmar-senha').value = '';
+
+                    alert('Cadastro realizado com sucesso.');
+
+                    window.location.href = 'main.html';
+                } else {
+                    alert('As senhas não coincidem. Por favor, verifique e tente novamente.');
+                }
+            } else {
+                alert('Alguns campos não foram preenchidos corretamente.');
+            }
+        }
+
+        function isValidEmail(email) {
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailPattern.test(email);
+        }
+
+        function handleKeyPress(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                cadastrar(event);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="page">
+        <form class="formLogin">
+            <h1>Cadastro</h1>
+            <p>Digite os seus dados para fazer o cadastro</p>
+            <label for="email">Login</label>
+            <input type="text" placeholder="Digite seu login" id="login" onkeypress="handleKeyPress(event)" />
+            <label for="password">Senha</label>
+            <input type="password" placeholder="Digite sua senha" required id="senha" onkeypress="handleKeyPress(event)" />
+            <label for="password">Confirmar Senha</label>
+            <input type="password" placeholder="Confirme a senha" required id="confirmar-senha" onkeypress="handleKeyPress(event)"/>
+            <div class="btn-container">
+                <button class="btn1 btn-voltar" onclick="window.location.href = 'main.html'">Voltar</button>
+                <input type="submit" value="Cadastrar" class="btn btn-cadastrar" onclick="cadastrar(event)" />
+            </div>
+        </form>
+    </div>
+</body>
+</html>
